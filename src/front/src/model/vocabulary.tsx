@@ -1,21 +1,31 @@
-export default class Translation {
-    from!: string;
-    to!: string;
-    transResult!: TransResult
+class VocabularyType {
+    category!: string;
+    transAndExamples!: TransAndExample[];
 
-    Translation(from: string, to: string, transResult: TransResult) {
-        this.from = from;
-        this.to = to;
-        this.transResult = transResult;
+    VocabularyType(category: string, transAndExamples: TransAndExample[]) {
+        this.category = category;
+        this.transAndExamples = transAndExamples;
     }
 }
 
-class TransResult {
+class TransAndExample {
+    translation!: string;
+    examples!: Example[];
+
+    TransAndExample(translation: string, examples: Example[]) {
+        this.translation = translation;
+        this.examples = examples;
+    }
+}
+
+class Example {
     src!: string;
     dst!: string;
 
-    TransResult(src: string, dst: string) {
+    Example(src: string, dst: string) {
         this.src = src;
         this.dst = dst;
     }
 }
+
+export { VocabularyType, TransAndExample, Example }

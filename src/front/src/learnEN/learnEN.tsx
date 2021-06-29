@@ -1,4 +1,4 @@
-import { Typography, Divider, Row, Col, Button, Input } from 'antd';
+import { Typography, Divider, Row, Col, Button, Input, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import React, { ChangeEvent } from 'react';
 import VocabularyDetail from './vocabularyDetail';
@@ -70,7 +70,7 @@ export default class LearnEN extends React.Component<any, IState> {
     }
 
     refreshFilterList = (searching: string) => {
-        var searchResult = searching == '' ? this.state.restoredList : this.state.restoredList.filter(item => item.toLowerCase().includes(this.state.searching.toLowerCase()));
+        var searchResult = searching === '' ? this.state.restoredList : this.state.restoredList.filter(item => item.toLowerCase().includes(this.state.searching.toLowerCase()));
 
         this.setState({
             filterList: searchResult
@@ -87,16 +87,18 @@ export default class LearnEN extends React.Component<any, IState> {
                 <Title style={{ textAlign: 'center', marginTop: '12px' }}>English Notes</Title>
                 <Divider style={{ marginTop: '12px' }} />
                 <Row>
-                    <Col span={4} />
-                    <Col span={12}>
+                    <Col span={5} />
+                    <Col span={13}>
                         <Input size="large" placeholder="Vocabulary or Sentence" style={{ borderRadius: '10px' }} allowClear onChange={this.handleSearchChange} />
                     </Col>
-                    <Col span={4}>
+                    <Col span={1}>
                         <Button size="large" type="primary" style={{ marginLeft: '5px' }} onClick={this.handleVocabularyAdd}><PlusOutlined /></Button>
                     </Col>
-                    <Col span={4} />
+                    <Col span={5} />
                 </Row>
-                {this.state.filterList.map(item => <VocabularyDetail vocabulary={item} key={item}></VocabularyDetail>)}
+                <Space direction="vertical" style={{ width: '100%' }}>
+                    {this.state.filterList.map((item, index) => <VocabularyDetail vocabulary={item} panelKey={index} key={index}></VocabularyDetail>)}
+                </Space>
             </div>
         );
     }
