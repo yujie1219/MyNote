@@ -1,10 +1,6 @@
 class VocabularyType {
-    category!: string;
-    transAndExamples!: TransAndExample[];
-}
-
-class TransAndExample {
     translation!: string;
+    category!: string;
     examples!: Example[];
 }
 
@@ -13,4 +9,4 @@ class Example {
     dst!: string;
 }
 
-export { VocabularyType, TransAndExample, Example }
+export { VocabularyType, Example }

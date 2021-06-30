@@ -16,3 +16,11 @@
     height: 50px;
     border-radius: 20px;
 }
+
+h4.ant-typography {
+    display: inline-block;
+}
+
+.ant-list-item {
+    display: block;
+}

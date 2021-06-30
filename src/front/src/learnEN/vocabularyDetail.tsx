@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { Collapse, Row, Col, Button } from 'antd';
+import { Collapse, Row, Col, Button, List, Typography } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { VocabularyType } from "../model/vocabulary";
 import "./vocabularyDetail.css";
 
 const { Panel } = Collapse;
+const { Title, Text } = Typography;
 
 interface IProp {
     vocabulary: string
@@ -22,12 +23,20 @@ export default class VocabularyDetail extends Component<IProp, IState> {
         this.state = {
             vocabularyTypes: [{
                 category: 'adv',
-                transAndExamples: [{
-                    translation: '测试',
-                    examples: [{
-                        src: "This is a test",
-                        dst: "这是一个测试"
-                    }]
+                translation: '测试',
+                examples: [{
+                    src: "This is a test",
+                    dst: "这是一个测试"
+                }]
+            }, {
+                category: 'adv',
+                translation: '测试2',
+                examples: [{
+                    src: "This is another test",
+                    dst: "这是另一个测试"
+                }, {
+                    src: "This is another test",
+                    dst: "这是另一个测试"
                 }]
             }],
             disableButton: false
@@ -51,28 +60,27 @@ export default class VocabularyDetail extends Component<IProp, IState> {
                 <Col span={14}>
                     <Collapse>
                         <Panel header={this.props.vocabulary} key={this.props.panelKey}>
-                            {this.state.vocabularyTypes.map((type, index) => {
-                                return (
-                                    <div key={index}>
-                                        <div>{type.category}</div>
-                                        {type.transAndExamples.map((item, index) => {
-                                            return (
-                                                <div key={index}>
-                                                    <div>{item.translation}</div>
-                                                    {item.examples.map((example, index) => {
-                                                        return (
-                                                            <div key={index}>
-                                                                <div>{example.src}</div>
-                                                                <div>{example.dst}</div>
-                                                            </div>
-                                                        )
-                                                    })}
+                            <List
+                                dataSource={this.state.vocabularyTypes}
+                                renderItem={item => (
+                                    <List.Item>
+                                        <List.Item.Meta
+                                            title={
+                                                <div>
+                                                    <Title level={4}>{item.translation}</Title>
+                                                    <Text type="secondary" style={{ marginLeft: '10px' }}>{item.category}</Text>
                                                 </div>
-                                            )
-                                        })}
-                                    </div>
-                                )
-                            })}
+                                            }
+                                        />
+                                        {item.examples.map((ex, index) =>
+                                            <div key={index}>
+                                                <Text>{ex.src}</Text>
+                                                <Text type="secondary">{ex.dst}</Text>
+                                            </div>
+                                        )}
+                                    </List.Item>
+                                )}
+                            />
                             <Button block disabled={this.state.disableButton} onClick={this.handleAddVocabularyTypes}><PlusOutlined /></Button>
                         </Panel>
                     </Collapse>
