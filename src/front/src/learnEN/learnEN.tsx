@@ -96,7 +96,7 @@ export default class LearnEN extends React.Component<any, IState> {
                     </Col>
                     <Col span={5} />
                 </Row>
-                <Space direction="vertical" style={{ width: '100%' }}>
+                <Space direction="vertical" style={{ width: '100%', marginTop: '10px' }}>
                     {this.state.filterList.map((item, index) => <VocabularyDetail vocabulary={item} panelKey={index} key={index}></VocabularyDetail>)}
                 </Space>
             </div>

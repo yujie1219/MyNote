@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import { Collapse } from 'antd';
+import { Collapse, Row, Col, Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { VocabularyType } from "../model/vocabulary";
+import "./vocabularyDetail.css";
 
 const { Panel } = Collapse;
 
@@ -10,14 +12,25 @@ interface IProp {
 }
 
 interface IState {
-    vocabularyTypes: VocabularyType[]
+    vocabularyTypes: VocabularyType[],
+    disableButton: boolean
 }
 
 export default class VocabularyDetail extends Component<IProp, IState> {
     constructor(props: IProp) {
         super(props);
         this.state = {
-            vocabularyTypes: []
+            vocabularyTypes: [{
+                category: 'adv',
+                transAndExamples: [{
+                    translation: '测试',
+                    examples: [{
+                        src: "This is a test",
+                        dst: "这是一个测试"
+                    }]
+                }]
+            }],
+            disableButton: false
         }
     }
 
@@ -25,13 +38,47 @@ export default class VocabularyDetail extends Component<IProp, IState> {
         // update vocabularyTypes
     }
 
+    handleAddVocabularyTypes = () => {
+        this.setState({
+            disableButton: true
+        });
+    }
+
     render() {
         return (
-            <Collapse style={{ width: '60%', margin: '10px auto 0px auto' }}>
-                <Panel style={{ marginTop: '10px' }} header={this.props.vocabulary} key={this.props.panelKey} >
-                    <p>test</p>
-                </Panel>
-            </Collapse>
+            <Row>
+                <Col span={5} />
+                <Col span={14}>
+                    <Collapse>
+                        <Panel header={this.props.vocabulary} key={this.props.panelKey}>
+                            {this.state.vocabularyTypes.map((type, index) => {
+                                return (
+                                    <div key={index}>
+                                        <div>{type.category}</div>
+                                        {type.transAndExamples.map((item, index) => {
+                                            return (
+                                                <div key={index}>
+                                                    <div>{item.translation}</div>
+                                                    {item.examples.map((example, index) => {
+                                                        return (
+                                                            <div key={index}>
+                                                                <div>{example.src}</div>
+                                                                <div>{example.dst}</div>
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                )
+                            })}
+                            <Button block disabled={this.state.disableButton} onClick={this.handleAddVocabularyTypes}><PlusOutlined /></Button>
+                        </Panel>
+                    </Collapse>
+                </Col>
+                <Col span={5} />
+            </Row>
         );
     }
 }

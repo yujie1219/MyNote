@@ -1,0 +1,18 @@
+.ant-collapse-item {
+    background-image: linear-gradient(to right, #f7f7f7, #f3f3f3);
+    margin: 0px auto 0px auto;
+    border-radius: 10px;
+}
+
+.ant-collapse-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 6px #999;
+    transition: all .2s ease-out;
+    border-radius: '10px';
+    background-color: #f7f7f7;
+}
+
+.ant-collapse-content-box>button {
+    height: 50px;
+    border-radius: 20px;
+}
