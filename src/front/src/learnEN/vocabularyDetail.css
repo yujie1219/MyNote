@@ -58,6 +58,11 @@ li.ant-list-item {
     margin-bottom: -35px;
 }
 
+.example-group:hover>.example-group-marker::marker {
+    transition: color .2s;
+    color: deepskyblue;
+}
+
 .example-group>.ant-typography:first-child::after {
     content: "\A";
     white-space: pre;
