@@ -9,4 +9,10 @@ class Example {
     dst!: string;
 }
 
-export { VocabularyType, Example }
+class EditVocabularyType {
+    editTranslation!: boolean;
+    editCategory!: boolean;
+    foldExample!: boolean;
+}
+
+export { VocabularyType, Example, EditVocabularyType }

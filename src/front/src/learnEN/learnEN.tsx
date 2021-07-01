@@ -32,8 +32,42 @@ export default class LearnEN extends React.Component<any, IState> {
         }
     }
 
+    // This syntax ensures that the 'this' in method has been bound
+    handleVocabularyAdd = async () => {
+        await this.delay();
+        const lowerSearching = this.state.searching;
+        if (!(this.state.restoredList.includes(lowerSearching))) {
+            // update the vocabulary
+            this.setState({
+                restoredList: [...this.state.restoredList, lowerSearching]
+            });
+
+            console.log("add");
+            this.refreshFilterList(lowerSearching);
+        }
+    }
+
+    handleVocabularyDelete = (vocabulary: string) => {
+        const index = this.state.restoredList.indexOf(vocabulary);
+        if (index > -1) {
+            this.state.restoredList.splice(index, 1);
+            this.setState({
+                restoredList: [...this.state.restoredList]
+            })
+            this.refreshFilterList(this.state.searching);
+        }
+    }
+
     handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-        this.updateSearching(e.target.value.trim());
+        this.updateSearching(e.target.value.toLowerCase().trim());
+    }
+
+    refreshFilterList = (searching: string) => {
+        const searchResult = searching === '' ? this.state.restoredList : this.state.restoredList.filter(item => item.toLowerCase().includes(searching));
+
+        this.setState({
+            filterList: [...searchResult]
+        });
     }
 
     debounce = (fn: Function, delay: number = 500) => {
@@ -56,27 +90,6 @@ export default class LearnEN extends React.Component<any, IState> {
         });
     });
 
-    // This syntax ensures that the 'this' in method has been bound
-    handleVocabularyAdd = async () => {
-        await this.delay();
-        if (!(this.state.restoredList.includes(this.state.searching))) {
-            // update the vocabulary
-            this.setState({
-                restoredList: [...this.state.restoredList, this.state.searching]
-            });
-
-            this.refreshFilterList(this.state.searching);
-        }
-    }
-
-    refreshFilterList = (searching: string) => {
-        var searchResult = searching === '' ? this.state.restoredList : this.state.restoredList.filter(item => item.toLowerCase().includes(this.state.searching.toLowerCase()));
-
-        this.setState({
-            filterList: searchResult
-        });
-    }
-
     delay = async (delay: number = 500) => {
         return new Promise(resolve => setTimeout(resolve, delay));
     }
@@ -92,12 +105,12 @@ export default class LearnEN extends React.Component<any, IState> {
                         <Input size="large" placeholder="Vocabulary or Sentence" style={{ borderRadius: '10px' }} allowClear onChange={this.handleSearchChange} />
                     </Col>
                     <Col span={1}>
-                        <Button size="large" type="primary" style={{ marginLeft: '5px' }} onClick={this.handleVocabularyAdd}><PlusOutlined /></Button>
+                        <Button size="large" type="primary" style={{ marginLeft: '5px' }} onClick={this.handleVocabularyAdd} icon={<PlusOutlined />}></Button>
                     </Col>
                     <Col span={5} />
                 </Row>
                 <Space direction="vertical" style={{ width: '100%', marginTop: '10px' }}>
-                    {this.state.filterList.map((item, index) => <VocabularyDetail vocabulary={item} panelKey={index} key={index}></VocabularyDetail>)}
+                    {this.state.filterList.map((item, index) => <VocabularyDetail handleVocabularyDelete={this.handleVocabularyDelete} vocabulary={item} panelKey={index} key={index}></VocabularyDetail>)}
                 </Space>
             </div>
         );
