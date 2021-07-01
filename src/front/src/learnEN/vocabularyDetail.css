@@ -29,14 +29,46 @@ li.ant-list-item {
     font-size: medium;
 }
 
-.example-group-even {
-    background-color: #f8f8f8;
-}
+/* .example-group {
+    display: list-item;
+    margin-left: -1.8px;
+} */
 
-.example-group-odd:hover {
+.example-group:hover {
     background-color: #f7f7f7;
 }
 
-.example-group-even:hover {
-    background-color: #bcdefd;
+/* .example-group::marker {
+    content: '◆';
+    font-size: xxx-large;
+} */
+
+/* .example-group:hover::marker {
+    transition: color .2s;
+    color: deepskyblue;
+} */
+
+.example-group>.ant-typography-secondary {
+    display: block;
+    margin-top: -20px;
+}
+
+.example-group>.ant-typography:first-child {
+    display: block;
+    margin-bottom: -35px;
+}
+
+.example-group>.ant-typography:first-child::after {
+    content: "\A";
+    white-space: pre;
+}
+
+.example-group-marker {
+    display: list-item;
+    margin-left: -1.8px;
+}
+
+.example-group-marker::marker {
+    content: '◆';
+    font-size: xxx-large;
 }

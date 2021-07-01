@@ -142,8 +142,9 @@ export default class VocabularyDetail extends Component<IProp, IState> {
                                             {
                                                 this.state.editVocabularyTypes[index].foldExample &&
                                                 item.examples.map((ex, index) =>
-                                                    <div key={index} className={index % 2 === 0 ? 'example-group-even' : 'example-group-odd'}>
-                                                        <Text>{ex.src}</Text><br />
+                                                    <div key={index} className={'example-group'}>
+                                                        <Text>{ex.src}</Text>
+                                                        <div className={'example-group-marker'}></div>
                                                         <Text type="secondary">{ex.dst}</Text>
                                                     </div>
                                                 )
