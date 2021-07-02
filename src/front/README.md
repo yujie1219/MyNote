@@ -44,3 +44,11 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+## What's Next
+
+1. Refact the Show Example part, separate it to a independent component, have the function to present and add example at the same time.
+
+2. Complete the functions of adding examples and add vocabularyTypes.
+
+3. Add the right-click menu to realize the function of deleting examples.
