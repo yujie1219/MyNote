@@ -47,8 +47,10 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## What's Next
 
-1. Refact the Show Example part, separate it to a independent component, have the function to present and add example at the same time.
+- [X] Refact the Show Example part, separate it to a independent component.
 
-2. Complete the functions of adding examples and add vocabularyTypes.
+- [] Complete the functions of adding examples and add vocabularyTypes.
 
-3. Add the right-click menu to realize the function of deleting examples.
+- [] Add the right-click menu to realize the function of deleting examples.
+
+- [] Fix the bug when the searching vocabulary change, the state property will not change.

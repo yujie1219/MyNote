@@ -3,6 +3,8 @@ import { Collapse, Row, Col, Button, List, Typography, Tooltip } from 'antd';
 import { PlusOutlined, CloseOutlined, MinusOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
 import { EditType, EditVocabularyType, VocabularyType } from "../model/vocabulary";
 import "./vocabularyDetail.css";
+import ShowExample from "./showExample";
+import ExampleConsole from "./exampleConsole";
 
 const { Panel } = Collapse;
 const { Title, Text } = Typography;
@@ -87,7 +89,7 @@ export default class VocabularyDetail extends Component<IProp, IState> {
         this.props.handleVocabularyDelete(this.props.vocabulary);
     }
 
-    handleExampleAdd(index: number) {
+    handleExampleAdd = (index: number) => {
         this.state.disableAddExamples[index] = true;
         this.setState({
             disableAddExamples: [...this.state.disableAddExamples]
@@ -243,7 +245,7 @@ export default class VocabularyDetail extends Component<IProp, IState> {
         )
     }
 
-    getEditableInstance(titleIndex: number, type: EditType, exampleIndex?: number) {
+    getEditableInstance = (titleIndex: number, type: EditType, exampleIndex?: number) => {
         return {
             icon: <div />,
             editing: this.getVocabularyTypesKey(titleIndex, type, exampleIndex),
@@ -277,39 +279,24 @@ export default class VocabularyDetail extends Component<IProp, IState> {
                                                                 editable={this.getEditableInstance(index, EditType.Category)}
                                                                 onClick={() => this.handleContentEdit(index, EditType.Category)}>{item.category}</Text>
                                                         </Col>
-                                                        <Col span={3}>
-                                                            <Tooltip placement="topLeft" title="增加范例" arrowPointAtCenter>
-                                                                <Button shape="circle" icon={<PlusOutlined />} style={{ border: '0px' }}
-                                                                    disabled={this.state.disableAddExamples[index]}
-                                                                    onClick={() => this.handleExampleAdd(index)}></Button>
-                                                            </Tooltip>
-
-                                                            <Tooltip placement="topLeft" title="删除译文" arrowPointAtCenter>
-                                                                <Button danger shape="circle" icon={<MinusOutlined />} style={{ border: '0px' }}
-                                                                    onClick={() => this.handleTranslationDelete(item.translation, index)}></Button>
-                                                            </Tooltip>
-
-                                                            <Tooltip placement="topLeft" title={this.state.editVocabularyTypes[index].foldExample ? "展开范例" : "收起范例"} arrowPointAtCenter>
-                                                                <Button shape="circle" icon={this.state.editVocabularyTypes[index].foldExample ? <DownOutlined /> : <UpOutlined />}
-                                                                    onClick={(e) => { this.state.editVocabularyTypes[index].foldExample ? this.handleExampleUnfold(index, e) : this.handleExampleFold(index, e) }}
-                                                                    style={{ border: '0px' }}></Button>
-                                                            </Tooltip>
-                                                        </Col>
+                                                        <ExampleConsole translation={item.translation} index={index}
+                                                            foldExample={this.state.editVocabularyTypes[index].foldExample}
+                                                            disableAdd={this.state.disableAddExamples[index]}
+                                                            handleExampleAdd={this.handleExampleAdd}
+                                                            handleTranslationDelete={this.handleTranslationDelete}
+                                                            handleExampleFold={this.handleExampleFold}
+                                                            handleExampleUnfold={this.handleExampleUnfold} />
                                                     </Row>
                                                 }
                                             />
                                             {
                                                 !this.state.editVocabularyTypes[index].foldExample &&
                                                 item.examples.map((ex, exIndex) =>
-                                                    <div key={exIndex} className={'example-group'} style={{ marginTop: (exIndex !== 0) ? '10px' : '0px' }}>
-                                                        <Text className='example-src' editable={this.getEditableInstance(index, EditType.ExampleSrc, exIndex)}
-                                                            onClick={() => this.handleContentEdit(index, EditType.ExampleSrc, exIndex)}>{ex.src}</Text>
-
-                                                        <div className={'example-group-marker'}></div>
-
-                                                        <Text className='example-dst' type="secondary" editable={this.getEditableInstance(index, EditType.ExampleDst, exIndex)}
-                                                            onClick={() => this.handleContentEdit(index, EditType.ExampleDst, exIndex)}>{ex.dst}</Text>
-                                                    </div>
+                                                    <ShowExample example={ex} exIndex={exIndex} transIndex={index}
+                                                        srcEditable={this.getEditableInstance}
+                                                        dstEditable={this.getEditableInstance}
+                                                        srcOnClick={this.handleContentEdit}
+                                                        dstOnClick={this.handleContentEdit} />
                                                 )
                                             }
                                         </List.Item>
