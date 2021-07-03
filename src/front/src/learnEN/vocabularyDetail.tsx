@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Collapse, Row, Col, Button, List, Typography, Tooltip } from 'antd';
 import { PlusOutlined, CloseOutlined, MinusOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
-import { EditType, EditVocabularyType, VocabularyType } from "../model/vocabulary";
+import { EditType, EditVocabularyType, Example, VocabularyType } from "../model/vocabulary";
 import "./vocabularyDetail.css";
 import ShowExample from "./showExample";
 import ExampleConsole from "./exampleConsole";
@@ -27,24 +27,24 @@ export default class VocabularyDetail extends Component<IProp, IState> {
     constructor(props: IProp) {
         super(props);
         this.state = {
-            vocabularyTypes: [{
-                category: 'adv',
-                translation: '测试',
-                examples: [{
-                    src: "This is a test",
-                    dst: "这是一个测试"
-                }]
-            }, {
-                category: 'adv',
-                translation: '测试2',
-                examples: [{
-                    src: "This is another test",
-                    dst: "这是另一个测试"
-                }, {
-                    src: "This is another test",
-                    dst: "这是另一个测试"
-                }]
-            }],
+            vocabularyTypes: [new VocabularyType(
+                'adv',
+                '测试',
+                [new Example(
+                    "This is a test",
+                    "这是一个测试"
+                )])
+                , new VocabularyType(
+                    'adv',
+                    '测试2',
+                    [new Example(
+                        "This is another test",
+                        "这是另一个测试"
+                    ), new Example(
+                        "This is another test",
+                        "这是另一个测试"
+                    )]
+                )],
             tempVocabularyTypes: [],
             editVocabularyTypes: [],
             disableAddExamples: [],
@@ -71,8 +71,9 @@ export default class VocabularyDetail extends Component<IProp, IState> {
         const initDisable = this.state.vocabularyTypes.map(item => {
             return false;
         })
+        const initTemp = this.state.vocabularyTypes.map(item => item.clone());
         this.setState({
-            tempVocabularyTypes: [...this.state.vocabularyTypes],
+            tempVocabularyTypes: [...initTemp],
             editVocabularyTypes: [...initEdit],
             disableAddExamples: [...initDisable]
         });
@@ -155,26 +156,32 @@ export default class VocabularyDetail extends Component<IProp, IState> {
     }
 
     handleContentChange = (value: string, titleIndex: number, type: EditType, exampleIndex: number = 0) => {
-        if (value.length > 0) {
-            switch (type) {
-                case EditType.Translation:
-                    this.state.tempVocabularyTypes[titleIndex].translation = value;
-                    break;
-                case EditType.Category:
-                    this.state.tempVocabularyTypes[titleIndex].category = value;
-                    break;
-                case EditType.ExampleSrc:
+        switch (type) {
+            case EditType.Translation:
+                this.state.tempVocabularyTypes[titleIndex].translation = value;
+                break;
+            case EditType.Category:
+                this.state.tempVocabularyTypes[titleIndex].category = value;
+                break;
+            case EditType.ExampleSrc:
+                if (value.length > 0) {
                     this.state.tempVocabularyTypes[titleIndex].examples[exampleIndex].src = value;
-                    break;
-                case EditType.ExampleDst:
+                } else {
+                    this.handelContentEditCancel(titleIndex, type, exampleIndex);
+                }
+                break;
+            case EditType.ExampleDst:
+                if (value.length > 0) {
                     this.state.tempVocabularyTypes[titleIndex].examples[exampleIndex].dst = value;
-                    break;
-            }
-
-            this.setState({
-                tempVocabularyTypes: [...this.state.tempVocabularyTypes]
-            });
+                } else {
+                    this.handelContentEditCancel(titleIndex, type, exampleIndex);
+                }
+                break;
         }
+
+        this.setState({
+            tempVocabularyTypes: [...this.state.tempVocabularyTypes]
+        });
     }
 
     handelContentEditCancel = (titleIndex: number, type: EditType, exampleIndex: number = 0) => {
@@ -237,22 +244,60 @@ export default class VocabularyDetail extends Component<IProp, IState> {
         }
     }
 
+    handleContentCancelWhileAdd(titleIndex: number, type: EditType) {
+        switch (type) {
+            case EditType.ExampleSrc:
+            case EditType.ExampleDst:
+                this.state.disableAddExamples[titleIndex] = false;
+                this.setState({
+                    disableAddExamples: [...this.state.disableAddExamples]
+                });
+        }
+    }
+
+    handleContentEndWhileAdd(titleIndex: number, type: EditType, value: Example) {
+        switch (type) {
+            case EditType.ExampleSrc:
+            case EditType.ExampleDst:
+                this.state.disableAddExamples[titleIndex] = false;
+                this.state.vocabularyTypes[titleIndex].examples.push(value);
+                this.state.tempVocabularyTypes[titleIndex].examples.push(value);
+                this.state.editVocabularyTypes[titleIndex].editExamples.push({
+                    editSrc: false,
+                    editDst: false
+                });
+                this.setState({
+                    disableAddExamples: [...this.state.disableAddExamples],
+                    vocabularyTypes: [...this.state.vocabularyTypes],
+                    tempVocabularyTypes: [...this.state.tempVocabularyTypes],
+                    editVocabularyTypes: [...this.state.editVocabularyTypes]
+                });
+                break;
+        }
+    }
+
+    getEditableInstance = (titleIndex: number, type: EditType, exampleIndex?: number, addNew?: boolean, value?: Example) => {
+        return {
+            icon: <div />,
+            editing: addNew ? true : this.getVocabularyTypesKey(titleIndex, type, exampleIndex),
+            onChange: addNew ? undefined : (value: string) => this.handleContentChange(value.trim(), titleIndex, type, exampleIndex),
+            onCancel: () => {
+                addNew ? this.handleContentCancelWhileAdd(titleIndex, type)
+                    : this.handelContentEditCancel(titleIndex, type, exampleIndex)
+            },
+            onEnd: () => {
+                addNew ? this.handleContentEndWhileAdd(titleIndex, type, value || new Example()) :
+                    this.handelContentEditEnd(titleIndex, type, exampleIndex)
+            }
+        }
+    }
+
     removePanelElement = () => {
         return (
             <Tooltip placement="topLeft" title="删除单词" arrowPointAtCenter>
                 <Button ghost danger size="small" shape="circle" icon={<CloseOutlined />} style={{ border: '0px' }} onClick={this.handleVocabularyDelete}></Button>
             </Tooltip>
         )
-    }
-
-    getEditableInstance = (titleIndex: number, type: EditType, exampleIndex?: number) => {
-        return {
-            icon: <div />,
-            editing: this.getVocabularyTypesKey(titleIndex, type, exampleIndex),
-            onChange: (value: string) => this.handleContentChange(value.trim(), titleIndex, type, exampleIndex),
-            onCancel: () => this.handelContentEditCancel(titleIndex, type, exampleIndex),
-            onEnd: () => this.handelContentEditEnd(titleIndex, type, exampleIndex)
-        }
     }
 
     render() {
@@ -298,6 +343,15 @@ export default class VocabularyDetail extends Component<IProp, IState> {
                                                         srcOnClick={this.handleContentEdit}
                                                         dstOnClick={this.handleContentEdit} />
                                                 )
+                                            }
+                                            {
+                                                this.state.disableAddExamples[index] &&
+                                                <ShowExample example={new Example()} exIndex={item.examples.length} transIndex={index}
+                                                    srcEditable={this.getEditableInstance}
+                                                    dstEditable={this.getEditableInstance}
+                                                    srcOnClick={this.handleContentEdit}
+                                                    dstOnClick={this.handleContentEdit}
+                                                    addNew />
                                             }
                                         </List.Item>
                                     )

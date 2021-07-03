@@ -42,7 +42,6 @@ export default class LearnEN extends React.Component<any, IState> {
                 restoredList: [...this.state.restoredList, lowerSearching]
             });
 
-            console.log("add");
             this.refreshFilterList(lowerSearching);
         }
     }
