@@ -1,3 +1,8 @@
+class Vocabulary {
+    word!: string;
+    hide?: boolean = false;
+}
+
 class VocabularyType {
     translation!: string;
     category!: string;
@@ -51,4 +56,4 @@ enum EditType {
     ExampleDst
 }
 
-export { VocabularyType, Example, EditVocabularyType, EditExample, EditType }
+export { Vocabulary, VocabularyType, Example, EditVocabularyType, EditExample, EditType }

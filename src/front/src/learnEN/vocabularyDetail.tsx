@@ -114,7 +114,9 @@ export default class VocabularyDetail extends Component<IProp, IState> {
 
     handleExampleFold = (index: number, event?: React.MouseEvent<HTMLElement, MouseEvent>) => {
         this.state.editVocabularyTypes[index].foldExample = true;
+        this.state.disableAddExamples[index] = false;
         this.setState({
+            disableAddExamples: [...this.state.disableAddExamples],
             editVocabularyTypes: [...this.state.editVocabularyTypes]
         });
 

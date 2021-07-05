@@ -55,4 +55,6 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 - [ ] Add the right-click menu to realize the function of deleting examples.
 
-- [ ] Fix the bug when the searching vocabulary change, the state property will not change.
+- [X] Fix the bug when the searching vocabulary change, the state property will not change.
+
+- [ ] Add Router.

@@ -2,13 +2,13 @@ import { Typography, Divider, Row, Col, Button, Input, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import React, { ChangeEvent } from 'react';
 import VocabularyDetail from './vocabularyDetail';
+import { Vocabulary } from '../model/vocabulary';
 
 const { Title } = Typography;
 
 interface IState {
     searching: string,
-    restoredList: Array<string>
-    filterList: Array<string>
+    restoredList: Array<Vocabulary>
 }
 
 export default class LearnEN extends React.Component<any, IState> {
@@ -16,8 +16,7 @@ export default class LearnEN extends React.Component<any, IState> {
         super(prop);
         this.state = {
             searching: '',
-            restoredList: [],
-            filterList: []
+            restoredList: []
         };
     }
 
@@ -32,14 +31,26 @@ export default class LearnEN extends React.Component<any, IState> {
         }
     }
 
+    vocabularyIfExist = (vocabulary: string) => {
+        let index = -1;
+        this.state.restoredList.forEach((item, i) => {
+            if (item.word === vocabulary) {
+                index = i;
+                return false;
+            }
+        })
+
+        return index;
+    }
+
     // This syntax ensures that the 'this' in method has been bound
     handleVocabularyAdd = async () => {
         await this.delay();
         const lowerSearching = this.state.searching;
-        if (!(this.state.restoredList.includes(lowerSearching))) {
+        if (this.vocabularyIfExist(lowerSearching) === -1) {
             // update the vocabulary
             this.setState({
-                restoredList: [...this.state.restoredList, lowerSearching]
+                restoredList: [...this.state.restoredList, { word: lowerSearching }]
             });
 
             this.refreshFilterList(lowerSearching);
@@ -47,7 +58,7 @@ export default class LearnEN extends React.Component<any, IState> {
     }
 
     handleVocabularyDelete = (vocabulary: string) => {
-        const index = this.state.restoredList.indexOf(vocabulary);
+        const index = this.vocabularyIfExist(vocabulary);
         if (index > -1) {
             this.state.restoredList.splice(index, 1);
             this.setState({
@@ -62,10 +73,11 @@ export default class LearnEN extends React.Component<any, IState> {
     }
 
     refreshFilterList = (searching: string) => {
-        const searchResult = searching === '' ? this.state.restoredList : this.state.restoredList.filter(item => item.toLowerCase().includes(searching));
+        searching === '' ? this.state.restoredList.map(item => item.hide = false)
+            : this.state.restoredList.map(item => item.word.toLowerCase().includes(searching) ? item.hide = false : item.hide = true);
 
         this.setState({
-            filterList: [...searchResult]
+            restoredList: [...this.state.restoredList]
         });
     }
 
@@ -109,7 +121,7 @@ export default class LearnEN extends React.Component<any, IState> {
                     <Col span={5} />
                 </Row>
                 <Space direction="vertical" style={{ width: '100%', marginTop: '10px' }}>
-                    {this.state.filterList.map((item, index) => <VocabularyDetail handleVocabularyDelete={this.handleVocabularyDelete} vocabulary={item} panelKey={index} key={index}></VocabularyDetail>)}
+                    {this.state.restoredList.map((item, index) => !item.hide && <VocabularyDetail handleVocabularyDelete={this.handleVocabularyDelete} vocabulary={item.word} panelKey={index} key={index}></VocabularyDetail>)}
                 </Space>
             </div>
         );
