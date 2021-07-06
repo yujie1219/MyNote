@@ -28,10 +28,15 @@ interface IState {
     editingSrc: boolean,
     editingDst: boolean,
     newExample: Example,
-    tempNew: Example
+    tempNew: Example,
+    shouldMenu: boolean,
+    left?: number,
+    top?: number
 }
 
 export default class ShowExample extends React.Component<IProp, IState> {
+    private exampleGroup: HTMLDivElement | undefined;
+
     constructor(props: IProp) {
         super(props);
 
@@ -40,14 +45,50 @@ export default class ShowExample extends React.Component<IProp, IState> {
             editingSrc: true,
             editingDst: true,
             newExample: example,
-            tempNew: example.clone()
+            tempNew: example.clone(),
+            shouldMenu: false
         }
+    }
+
+    componentDidMount = () => {
+        document.addEventListener('contextmenu', this.listenContextMenu);
+    }
+
+    componentWillUnmount = () => {
+        document.removeEventListener('contextmenu', this.listenContextMenu);
+    }
+
+    listenContextMenu = (event: MouseEvent) => {
+        if (this.exampleGroup !== undefined && (event.target as HTMLElement).parentNode === this.exampleGroup) {
+            event.preventDefault();
+
+            this.setState({
+                shouldMenu: true,
+                left: event.clientX,
+                top: event.clientY
+            });
+
+        } else {
+            this.setState({
+                shouldMenu: false
+            });
+        }
+    }
+
+    renderContentMenu = () => {
+        return this.state.shouldMenu && (
+            <div style={{ position: 'fixed', left: this.state.left, top: this.state.top }}>
+                <ul className="example-context-menu">
+                    <li>Delete Example</li>
+                </ul>
+            </div>
+        );
     }
 
     getEditInstanceWhileAdd = (type: EditType) => {
         return {
             icon: <div />,
-            editing: type == EditType.ExampleSrc ? this.state.editingSrc : this.state.editingDst,
+            editing: type === EditType.ExampleSrc ? this.state.editingSrc : this.state.editingDst,
             onChange: (value: string) => this.handleExampleChangeWhileAdd(value, type),
             onCancel: () => this.handleExampleCancelWhileAdd(type),
             onEnd: () => this.handleExampleEndWhileAdd(type)
@@ -57,7 +98,7 @@ export default class ShowExample extends React.Component<IProp, IState> {
     handleExampleEndWhileAdd = async (type?: EditType) => {
         switch (type) {
             case EditType.ExampleSrc:
-                if (this.state.tempNew.src.length == 0) {
+                if (this.state.tempNew.src.length === 0) {
                     this.handleExampleCancelWhileAdd(type);
                 } else {
                     await this.setState({
@@ -73,7 +114,7 @@ export default class ShowExample extends React.Component<IProp, IState> {
                 }
                 break;
             case EditType.ExampleDst:
-                if (this.state.tempNew.dst.length == 0) {
+                if (this.state.tempNew.dst.length === 0) {
                     this.handleExampleCancelWhileAdd(type);
                 } else {
                     await this.setState({
@@ -94,7 +135,7 @@ export default class ShowExample extends React.Component<IProp, IState> {
     handleExampleCancelWhileAdd = (type?: EditType) => {
         switch (type) {
             case EditType.ExampleSrc:
-                if (this.state.newExample.src.length == 0) {
+                if (this.state.newExample.src.length === 0) {
                     // tell the parent should cancel the add progress
                     this.props.srcEditable(this.props.transIndex, type, this.props.exIndex, this.props.addNew).onCancel();
                 } else {
@@ -104,7 +145,7 @@ export default class ShowExample extends React.Component<IProp, IState> {
                 }
                 break;
             case EditType.ExampleDst:
-                if (this.state.newExample.dst.length == 0) {
+                if (this.state.newExample.dst.length === 0) {
                     // tell the parent should cancel the add progress
                     this.props.dstEditable(this.props.transIndex, type, this.props.exIndex, this.props.addNew).onCancel();
                 } else {
@@ -116,17 +157,18 @@ export default class ShowExample extends React.Component<IProp, IState> {
     }
 
     handleExampleChangeWhileAdd = (value: string, type?: EditType) => {
+        const temp = this.state.tempNew.clone();
         switch (type) {
             case EditType.ExampleSrc:
-                this.state.tempNew.src = value;
+                temp.src = value;
                 break;
             case EditType.ExampleDst:
-                this.state.tempNew.dst = value;
+                temp.dst = value;
                 break;
         }
 
         this.setState({
-            tempNew: this.state.tempNew.clone()
+            tempNew: temp.clone()
         })
     }
 
@@ -148,8 +190,13 @@ export default class ShowExample extends React.Component<IProp, IState> {
     render() {
         const addNew = this.props.addNew;
         return (
-            <div key={this.props.exIndex} className={'example-group'}
-                style={{ marginTop: (this.props.exIndex !== 0) ? '10px' : '0px' }}>
+            <div className={'example-group'}
+                style={{ marginTop: (this.props.exIndex !== 0) ? '10px' : '0px' }}
+                ref={
+                    ref => {
+                        if (ref) { this.exampleGroup = ref; }
+                    }
+                }>
 
                 <Text className='example-src'
                     editable={addNew ? this.getEditInstanceWhileAdd(EditType.ExampleSrc) :
@@ -166,6 +213,7 @@ export default class ShowExample extends React.Component<IProp, IState> {
                     onClick={() => addNew ? this.handleExampleOnClickWhileAdd(EditType.ExampleDst) :
                         this.props.dstOnClick(this.props.transIndex, EditType.ExampleDst, this.props.exIndex)}>
                     {addNew ? this.state.newExample.dst : this.props.example.dst}</Text>
+                {this.renderContentMenu()}
             </div>
         );
     }

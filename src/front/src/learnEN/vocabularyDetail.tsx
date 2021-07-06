@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Collapse, Row, Col, Button, List, Typography, Tooltip } from 'antd';
-import { PlusOutlined, CloseOutlined, MinusOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
+import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import { EditType, EditVocabularyType, Example, VocabularyType } from "../model/vocabulary";
 import "./vocabularyDetail.css";
 import ShowExample from "./showExample";
@@ -91,9 +91,10 @@ export default class VocabularyDetail extends Component<IProp, IState> {
     }
 
     handleExampleAdd = (index: number) => {
-        this.state.disableAddExamples[index] = true;
+        const tempDisableAddExamples = [...this.state.disableAddExamples];
+        tempDisableAddExamples[index] = true;
         this.setState({
-            disableAddExamples: [...this.state.disableAddExamples]
+            disableAddExamples: [...tempDisableAddExamples]
         });
 
         this.handleExampleUnfold(index);
@@ -339,7 +340,7 @@ export default class VocabularyDetail extends Component<IProp, IState> {
                                             {
                                                 !this.state.editVocabularyTypes[index].foldExample &&
                                                 item.examples.map((ex, exIndex) =>
-                                                    <ShowExample example={ex} exIndex={exIndex} transIndex={index}
+                                                    <ShowExample key={exIndex} example={ex} exIndex={exIndex} transIndex={index}
                                                         srcEditable={this.getEditableInstance}
                                                         dstEditable={this.getEditableInstance}
                                                         srcOnClick={this.handleContentEdit}

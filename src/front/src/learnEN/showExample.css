@@ -63,3 +63,16 @@
     content: '◆';
     font-size: xxx-large;
 }
+
+.example-context-menu {
+    list-style: none;
+    width: 150%;
+    height: 30px;
+    padding: 0;
+}
+
+.example-context-menu>li:hover {
+    cursor: pointer;
+    transition: color .2s;
+    color: deepskyblue;
+}
