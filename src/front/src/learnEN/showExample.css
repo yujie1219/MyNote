@@ -66,13 +66,14 @@
 
 .example-context-menu {
     list-style: none;
-    width: 150%;
-    height: 30px;
+    width: 130%;
     padding: 0;
+    background-color: white;
 }
 
 .example-context-menu>li:hover {
     cursor: pointer;
     transition: color .2s;
-    color: deepskyblue;
+    background-color: deepskyblue;
+    color: white;
 }

@@ -137,6 +137,21 @@ export default class VocabularyDetail extends Component<IProp, IState> {
         }
     }
 
+    handleExampleDelete = (titleIndex: number, exampleIndex: number, example: Example) => {
+        const currentEx = this.state.vocabularyTypes[titleIndex].examples[exampleIndex];
+        if (currentEx.src === example.src && currentEx.dst === example.dst) {
+            this.state.vocabularyTypes[titleIndex].examples.splice(exampleIndex, 1);
+            this.state.tempVocabularyTypes[titleIndex].examples.splice(exampleIndex, 1);
+            this.state.editVocabularyTypes[titleIndex].editExamples.splice(exampleIndex, 1);
+
+            this.setState({
+                vocabularyTypes: [...this.state.vocabularyTypes],
+                tempVocabularyTypes: [...this.state.tempVocabularyTypes],
+                editVocabularyTypes: [...this.state.editVocabularyTypes]
+            });
+        }
+    }
+
     handleContentEdit = (titleIndex: number, type: EditType, exampleIndex: number = 0) => {
         switch (type) {
             case EditType.Translation:
@@ -151,6 +166,8 @@ export default class VocabularyDetail extends Component<IProp, IState> {
             case EditType.ExampleDst:
                 this.state.editVocabularyTypes[titleIndex].editExamples[exampleIndex].editDst = true;
                 break;
+            default:
+                console.error("Type {0} haven't been supported", type)
         }
 
         this.setState({
@@ -180,6 +197,8 @@ export default class VocabularyDetail extends Component<IProp, IState> {
                     this.handelContentEditCancel(titleIndex, type, exampleIndex);
                 }
                 break;
+            default:
+                console.error("Type {0} haven't been supported", type)
         }
 
         this.setState({
@@ -201,6 +220,8 @@ export default class VocabularyDetail extends Component<IProp, IState> {
             case EditType.ExampleDst:
                 this.state.editVocabularyTypes[titleIndex].editExamples[exampleIndex].editDst = false;
                 break;
+            default:
+                console.error("Type {0} haven't been supported", type)
         }
 
         this.setState({
@@ -226,6 +247,8 @@ export default class VocabularyDetail extends Component<IProp, IState> {
                 this.state.editVocabularyTypes[titleIndex].editExamples[exampleIndex].editDst = false;
                 // update the this.state.tempVocabularyTypes[titleIndex].examples[exampleIndex].dst in backend also
                 break;
+            default:
+                console.error("Type {0} haven't been supported", type)
         }
 
         this.setState({
@@ -244,6 +267,9 @@ export default class VocabularyDetail extends Component<IProp, IState> {
                 return this.state.editVocabularyTypes[titleIndex].editExamples[exampleIndex].editSrc;
             case EditType.ExampleDst:
                 return this.state.editVocabularyTypes[titleIndex].editExamples[exampleIndex].editDst;
+            default:
+                console.error("Type {0} haven't been supported", type)
+                return false;
         }
     }
 
@@ -255,6 +281,9 @@ export default class VocabularyDetail extends Component<IProp, IState> {
                 this.setState({
                     disableAddExamples: [...this.state.disableAddExamples]
                 });
+                break;
+            default:
+                console.error("Type {0} haven't been supported", type)
         }
     }
 
@@ -276,6 +305,8 @@ export default class VocabularyDetail extends Component<IProp, IState> {
                     editVocabularyTypes: [...this.state.editVocabularyTypes]
                 });
                 break;
+            default:
+                console.error("Type {0} haven't been supported", type)
         }
     }
 
@@ -344,7 +375,8 @@ export default class VocabularyDetail extends Component<IProp, IState> {
                                                         srcEditable={this.getEditableInstance}
                                                         dstEditable={this.getEditableInstance}
                                                         srcOnClick={this.handleContentEdit}
-                                                        dstOnClick={this.handleContentEdit} />
+                                                        dstOnClick={this.handleContentEdit}
+                                                        onDelete={this.handleExampleDelete} />
                                                 )
                                             }
                                             {
@@ -354,6 +386,7 @@ export default class VocabularyDetail extends Component<IProp, IState> {
                                                     dstEditable={this.getEditableInstance}
                                                     srcOnClick={this.handleContentEdit}
                                                     dstOnClick={this.handleContentEdit}
+                                                    onDelete={this.handleExampleDelete}
                                                     addNew />
                                             }
                                         </List.Item>

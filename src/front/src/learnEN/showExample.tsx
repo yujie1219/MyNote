@@ -2,6 +2,7 @@ import React from "react";
 import { Typography } from 'antd';
 import { EditType, Example } from "../model/vocabulary";
 import './showExample.css'
+import Utils from "../share/utils";
 
 const { Text } = Typography;
 
@@ -21,6 +22,7 @@ interface IProp {
     dstEditable: (titleIndex: number, type: EditType, exampleIndex?: number | undefined, addNew?: boolean, value?: Example) => EditConfig,
     srcOnClick: (titleIndex: number, type: EditType, exampleIndFex?: number) => void | undefined,
     dstOnClick: (titleIndex: number, type: EditType, exampleIndex?: number) => void | undefined,
+    onDelete: (titleIndex: number, exampleIndex: number, example: Example) => void,
     addNew?: boolean
 }
 
@@ -36,6 +38,7 @@ interface IState {
 
 export default class ShowExample extends React.Component<IProp, IState> {
     private exampleGroup: HTMLDivElement | undefined;
+    private customContextMenu: HTMLDivElement | undefined;
 
     constructor(props: IProp) {
         super(props);
@@ -45,21 +48,23 @@ export default class ShowExample extends React.Component<IProp, IState> {
             editingSrc: true,
             editingDst: true,
             newExample: example,
-            tempNew: example.clone(),
+            tempNew: { ...example },
             shouldMenu: false
         }
     }
 
     componentDidMount = () => {
         document.addEventListener('contextmenu', this.listenContextMenu);
+        document.addEventListener('click', this.listenMouseDown);
     }
 
     componentWillUnmount = () => {
         document.removeEventListener('contextmenu', this.listenContextMenu);
+        document.removeEventListener('click', this.listenMouseDown);
     }
 
     listenContextMenu = (event: MouseEvent) => {
-        if (this.exampleGroup !== undefined && (event.target as HTMLElement).parentNode === this.exampleGroup) {
+        if (!this.props.addNew && this.exampleGroup !== undefined && (event.target as HTMLElement).parentNode === this.exampleGroup) {
             event.preventDefault();
 
             this.setState({
@@ -75,21 +80,43 @@ export default class ShowExample extends React.Component<IProp, IState> {
         }
     }
 
+    listenMouseDown = (event: MouseEvent) => {
+        if (!this.props.addNew && event.target !== this.customContextMenu) {
+            this.setState({
+                shouldMenu: false
+            });
+        }
+    }
+
     renderContentMenu = () => {
         return this.state.shouldMenu && (
-            <div style={{ position: 'fixed', left: this.state.left, top: this.state.top }}>
+            <div style={{ position: 'fixed', left: this.state.left, top: this.state.top }}
+                ref={
+                    ref => {
+                        if (ref) {
+                            this.customContextMenu = ref;
+                        }
+                    }
+                }>
                 <ul className="example-context-menu">
-                    <li>Delete Example</li>
+                    <li onClick={() => this.handleExampleDelete()}>Delete Example</li>
                 </ul>
             </div>
         );
+    }
+
+    handleExampleDelete = () => {
+        this.setState({
+            shouldMenu: false
+        });
+        this.props.onDelete(this.props.transIndex, this.props.exIndex, this.props.example);
     }
 
     getEditInstanceWhileAdd = (type: EditType) => {
         return {
             icon: <div />,
             editing: type === EditType.ExampleSrc ? this.state.editingSrc : this.state.editingDst,
-            onChange: (value: string) => this.handleExampleChangeWhileAdd(value, type),
+            onChange: (value: string) => this.handleExampleChangeWhileAdd(value.trim(), type),
             onCancel: () => this.handleExampleCancelWhileAdd(type),
             onEnd: () => this.handleExampleEndWhileAdd(type)
         }
@@ -102,7 +129,7 @@ export default class ShowExample extends React.Component<IProp, IState> {
                     this.handleExampleCancelWhileAdd(type);
                 } else {
                     await this.setState({
-                        newExample: this.state.tempNew.clone(),
+                        newExample: { ...this.state.tempNew },
                         editingSrc: false
                     });
 
@@ -118,7 +145,7 @@ export default class ShowExample extends React.Component<IProp, IState> {
                     this.handleExampleCancelWhileAdd(type);
                 } else {
                     await this.setState({
-                        newExample: this.state.tempNew.clone(),
+                        newExample: { ...this.state.tempNew },
                         editingDst: false
                     });
 
@@ -129,6 +156,8 @@ export default class ShowExample extends React.Component<IProp, IState> {
                     }
                 }
                 break;
+            default:
+                console.error("Type {0} haven't been supported", type)
         }
     }
 
@@ -153,11 +182,14 @@ export default class ShowExample extends React.Component<IProp, IState> {
                         editingDst: false
                     });
                 }
+                break;
+            default:
+                console.error("Type {0} haven't been supported", type)
         }
     }
 
     handleExampleChangeWhileAdd = (value: string, type?: EditType) => {
-        const temp = this.state.tempNew.clone();
+        const temp = this.state.tempNew;
         switch (type) {
             case EditType.ExampleSrc:
                 temp.src = value;
@@ -165,11 +197,13 @@ export default class ShowExample extends React.Component<IProp, IState> {
             case EditType.ExampleDst:
                 temp.dst = value;
                 break;
+            default:
+                console.error("Type {0} haven't been supported", type)
         }
 
         this.setState({
-            tempNew: temp.clone()
-        })
+            tempNew: { ...temp }
+        });
     }
 
     handleExampleOnClickWhileAdd(type: EditType) {
@@ -184,6 +218,8 @@ export default class ShowExample extends React.Component<IProp, IState> {
                     editingDst: true
                 })
                 break;
+            default:
+                console.error("Type {0} haven't been supported", type)
         }
     }
 

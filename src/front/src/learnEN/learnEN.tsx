@@ -3,6 +3,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import React, { ChangeEvent } from 'react';
 import VocabularyDetail from './vocabularyDetail';
 import { Vocabulary } from '../model/vocabulary';
+import Utils from '../share/utils';
 
 const { Title } = Typography;
 
@@ -45,7 +46,7 @@ export default class LearnEN extends React.Component<any, IState> {
 
     // This syntax ensures that the 'this' in method has been bound
     handleVocabularyAdd = async () => {
-        await this.delay();
+        await Utils.delay();
         const lowerSearching = this.state.searching;
         if (this.vocabularyIfExist(lowerSearching) === -1) {
             // update the vocabulary
@@ -100,10 +101,6 @@ export default class LearnEN extends React.Component<any, IState> {
             searching: searching
         });
     });
-
-    delay = async (delay: number = 500) => {
-        return new Promise(resolve => setTimeout(resolve, delay));
-    }
 
     render() {
         return (
