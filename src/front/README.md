@@ -51,7 +51,7 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 - [X] Complete the functions of adding examples.
 
-- [ ] Complete the functions of adding translations.
+- [X] Complete the functions of adding translations.
 
 - [X] Add the right-click menu to realize the function of deleting examples.
 

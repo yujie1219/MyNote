@@ -5,6 +5,7 @@ import { EditType, EditVocabularyType, Example, VocabularyType } from "../model/
 import "./vocabularyDetail.css";
 import ShowExample from "./showExample";
 import ExampleConsole from "./exampleConsole";
+import AddTranslation from "./addTranslation";
 
 const { Panel } = Collapse;
 const { Title, Text } = Typography;
@@ -20,7 +21,7 @@ interface IState {
     tempVocabularyTypes: VocabularyType[],
     editVocabularyTypes: EditVocabularyType[],
     disableAddExamples: boolean[],
-    disableAddVocabulary: boolean
+    showAddTranslationModal: boolean
 }
 
 export default class VocabularyDetail extends Component<IProp, IState> {
@@ -28,15 +29,15 @@ export default class VocabularyDetail extends Component<IProp, IState> {
         super(props);
         this.state = {
             vocabularyTypes: [new VocabularyType(
-                'adv',
                 '测试',
+                'adv',
                 [new Example(
                     "This is a test",
                     "这是一个测试"
                 )])
                 , new VocabularyType(
-                    'adv',
                     '测试2',
+                    'adv',
                     [new Example(
                         "This is another test",
                         "这是另一个测试"
@@ -48,7 +49,7 @@ export default class VocabularyDetail extends Component<IProp, IState> {
             tempVocabularyTypes: [],
             editVocabularyTypes: [],
             disableAddExamples: [],
-            disableAddVocabulary: false
+            showAddTranslationModal: false
         }
     }
 
@@ -79,9 +80,38 @@ export default class VocabularyDetail extends Component<IProp, IState> {
         });
     }
 
-    handleVocabularyTypesAdd = () => {
+    handleTranslationAdd = () => {
         this.setState({
-            disableAddVocabulary: true
+            showAddTranslationModal: true
+        });
+    }
+
+    handleTranslationAddCancel = () => {
+        this.setState({
+            showAddTranslationModal: false
+        });
+    }
+
+    handleTranslationAddOk = (translation: VocabularyType) => {
+        const { vocabularyTypes, tempVocabularyTypes, editVocabularyTypes, disableAddExamples } = this.state;
+        vocabularyTypes.push(translation.clone());
+        tempVocabularyTypes.push(translation.clone());
+        editVocabularyTypes.push({
+            editTranslation: false,
+            editCategory: false,
+            editExamples: [],
+            foldExample: true
+        });
+        disableAddExamples.push(false);
+        this.setState({
+            vocabularyTypes: [...vocabularyTypes],
+            tempVocabularyTypes: [...tempVocabularyTypes],
+            editVocabularyTypes: [...editVocabularyTypes],
+            disableAddExamples: [...disableAddExamples]
+        });
+
+        this.setState({
+            showAddTranslationModal: false
         });
     }
 
@@ -393,7 +423,10 @@ export default class VocabularyDetail extends Component<IProp, IState> {
                                     )
                                 }}
                             />
-                            <Button block disabled={this.state.disableAddVocabulary} onClick={this.handleVocabularyTypesAdd} icon={<PlusOutlined />}></Button>
+                            <Button block disabled={this.state.showAddTranslationModal} onClick={this.handleTranslationAdd} icon={<PlusOutlined />}></Button>
+                            <AddTranslation visible={this.state.showAddTranslationModal}
+                                handleTranslationAddCancel={this.handleTranslationAddCancel}
+                                handleTranslationAddOk={this.handleTranslationAddOk} />
                         </Panel>
                     </Collapse>
                 </Col>

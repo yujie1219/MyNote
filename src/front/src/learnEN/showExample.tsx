@@ -2,7 +2,6 @@ import React from "react";
 import { Typography } from 'antd';
 import { EditType, Example } from "../model/vocabulary";
 import './showExample.css'
-import Utils from "../share/utils";
 
 const { Text } = Typography;
 

@@ -8,7 +8,7 @@ class VocabularyType {
     category!: string;
     examples!: Example[];
 
-    constructor(translation: string = '', category: string = '', examples: Example[] = []) {
+    constructor(translation: string = '', category: string = 'n.', examples: Example[] = []) {
         this.translation = translation;
         this.category = category;
         this.examples = examples;
