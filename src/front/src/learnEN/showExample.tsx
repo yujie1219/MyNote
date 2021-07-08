@@ -38,6 +38,7 @@ interface IState {
 export default class ShowExample extends React.Component<IProp, IState> {
     private exampleGroup: HTMLDivElement | undefined;
     private customContextMenu: HTMLDivElement | undefined;
+    private initFocus: boolean = false;
 
     constructor(props: IProp) {
         super(props);
@@ -57,13 +58,24 @@ export default class ShowExample extends React.Component<IProp, IState> {
         document.addEventListener('click', this.listenMouseDown);
     }
 
+    componentDidUpdate = () => {
+        if (!this.initFocus && this.props.addNew) {
+            const srcText = this.exampleGroup?.getElementsByClassName('example-src').item(0)?.firstElementChild
+            if (srcText) {
+                (srcText as HTMLElement).focus();
+                this.initFocus = true;
+            }
+        }
+    }
+
     componentWillUnmount = () => {
         document.removeEventListener('contextmenu', this.listenContextMenu);
         document.removeEventListener('click', this.listenMouseDown);
     }
 
     listenContextMenu = (event: MouseEvent) => {
-        if (!this.props.addNew && this.exampleGroup !== undefined && (event.target as HTMLElement).parentNode === this.exampleGroup) {
+        if (!this.props.addNew &&
+            this.exampleGroup !== undefined && (event.target as HTMLElement).parentNode === this.exampleGroup) {
             event.preventDefault();
 
             this.setState({
@@ -148,7 +160,7 @@ export default class ShowExample extends React.Component<IProp, IState> {
                         editingDst: false
                     });
 
-                    if (!this.state.editingSrc) {
+                    if (!this.state.editingSrc || this.state.tempNew.src.length != 0) {
                         // tell the parent to end the add progress
                         this.props.dstEditable(this.props.transIndex, type,
                             this.props.exIndex, this.props.addNew, this.state.newExample).onEnd();

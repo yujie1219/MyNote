@@ -1,23 +1,17 @@
 import React from "react";
-import { Row, Col, Modal, Input, Typography, Select } from 'antd';
+import { Row, Col, Input, Typography, Select } from 'antd';
 import { VocabularyType } from "../model/vocabulary";
 
 const { Text } = Typography;
 const { Option } = Select;
-
-interface IProp {
-    visible: boolean,
-    handleTranslationAddCancel: () => void
-    handleTranslationAddOk: (translation: VocabularyType) => void
-}
 
 interface ISate {
     translation: VocabularyType,
     showTranslationNullIssue: boolean
 }
 
-export default class AddTranslation extends React.Component<IProp, ISate> {
-    constructor(props: IProp) {
+export default class TranslationAddContent extends React.Component<any, ISate> {
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -26,26 +20,35 @@ export default class AddTranslation extends React.Component<IProp, ISate> {
         };
     }
 
-    handleTranslationAddOk = () => {
+    public handleTranslationAddOk = () => {
         const { translation } = this.state;
         if (translation.translation.length === 0) {
             this.setState({
                 showTranslationNullIssue: true
-            })
+            });
+
+            return undefined;
         } else {
             this.setState({
                 showTranslationNullIssue: false
-            })
-            this.props.handleTranslationAddOk(translation);
+            });
+            return translation;
         }
     }
 
     handleTranslationChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { translation } = this.state;
         translation.translation = event.target.value.trim();
-        this.setState({
-            translation: translation.clone()
-        });
+        if (translation.translation.length === 0) {
+            this.setState({
+                showTranslationNullIssue: true
+            });
+        } else {
+            this.setState({
+                translation: translation.clone(),
+                showTranslationNullIssue: false
+            });
+        }
     }
 
     handleCategoryChanged = (value: string) => {
@@ -58,13 +61,18 @@ export default class AddTranslation extends React.Component<IProp, ISate> {
 
     render() {
         return (
-            <Modal title='Add Translation' visible={this.props.visible} destroyOnClose onCancel={this.props.handleTranslationAddCancel} onOk={this.handleTranslationAddOk}>
+            <div>
                 <Row>
                     <Col span={5}>
                         <Text>Translation</Text>
                     </Col>
                     <Col span={19}>
                         <Input placeholder="Translation" onChange={this.handleTranslationChanged} />
+                    </Col>
+                </Row>
+                <Row style={{ marginTop: '5px' }} hidden={!this.state.showTranslationNullIssue}>
+                    <Col span={24}>
+                        <Text type='danger'>The Translation should not be null!</Text>
                     </Col>
                 </Row>
                 <Row style={{ marginTop: '10px' }}>
@@ -80,7 +88,7 @@ export default class AddTranslation extends React.Component<IProp, ISate> {
                         </Select>
                     </Col>
                 </Row>
-            </Modal>
+            </div>
         );
     }
 }

@@ -5,7 +5,8 @@ import { EditType, EditVocabularyType, Example, VocabularyType } from "../model/
 import "./vocabularyDetail.css";
 import ShowExample from "./showExample";
 import ExampleConsole from "./exampleConsole";
-import AddTranslation from "./addTranslation";
+import TranslationAddContent from "./translationAddContent";
+import BasicModal from "../share/basicModal";
 
 const { Panel } = Collapse;
 const { Title, Text } = Typography;
@@ -25,6 +26,8 @@ interface IState {
 }
 
 export default class VocabularyDetail extends Component<IProp, IState> {
+    translationAddRef: TranslationAddContent | undefined;
+
     constructor(props: IProp) {
         super(props);
         this.state = {
@@ -80,6 +83,16 @@ export default class VocabularyDetail extends Component<IProp, IState> {
         });
     }
 
+    getTranslationAddContent = () => {
+        return (
+            <TranslationAddContent ref={
+                ref => {
+                    if (ref) this.translationAddRef = ref;
+                }
+            } />
+        );
+    }
+
     handleTranslationAdd = () => {
         this.setState({
             showAddTranslationModal: true
@@ -92,27 +105,31 @@ export default class VocabularyDetail extends Component<IProp, IState> {
         });
     }
 
-    handleTranslationAddOk = (translation: VocabularyType) => {
-        const { vocabularyTypes, tempVocabularyTypes, editVocabularyTypes, disableAddExamples } = this.state;
-        vocabularyTypes.push(translation.clone());
-        tempVocabularyTypes.push(translation.clone());
-        editVocabularyTypes.push({
-            editTranslation: false,
-            editCategory: false,
-            editExamples: [],
-            foldExample: true
-        });
-        disableAddExamples.push(false);
-        this.setState({
-            vocabularyTypes: [...vocabularyTypes],
-            tempVocabularyTypes: [...tempVocabularyTypes],
-            editVocabularyTypes: [...editVocabularyTypes],
-            disableAddExamples: [...disableAddExamples]
-        });
+    handleTranslationAddOk = () => {
+        const translation = this.translationAddRef?.handleTranslationAddOk()
 
-        this.setState({
-            showAddTranslationModal: false
-        });
+        if (translation) {
+            const { vocabularyTypes, tempVocabularyTypes, editVocabularyTypes, disableAddExamples } = this.state;
+            vocabularyTypes.push(translation.clone());
+            tempVocabularyTypes.push(translation.clone());
+            editVocabularyTypes.push({
+                editTranslation: false,
+                editCategory: false,
+                editExamples: [],
+                foldExample: true
+            });
+            disableAddExamples.push(false);
+            this.setState({
+                vocabularyTypes: [...vocabularyTypes],
+                tempVocabularyTypes: [...tempVocabularyTypes],
+                editVocabularyTypes: [...editVocabularyTypes],
+                disableAddExamples: [...disableAddExamples]
+            });
+
+            this.setState({
+                showAddTranslationModal: false
+            });
+        }
     }
 
     handleVocabularyDelete = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
@@ -424,7 +441,8 @@ export default class VocabularyDetail extends Component<IProp, IState> {
                                 }}
                             />
                             <Button block disabled={this.state.showAddTranslationModal} onClick={this.handleTranslationAdd} icon={<PlusOutlined />}></Button>
-                            <AddTranslation visible={this.state.showAddTranslationModal}
+                            <BasicModal content={this.getTranslationAddContent()}
+                                visible={this.state.showAddTranslationModal}
                                 handleTranslationAddCancel={this.handleTranslationAddCancel}
                                 handleTranslationAddOk={this.handleTranslationAddOk} />
                         </Panel>
