@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import LearnEN from './learnEN/learnEN';
 import "antd/dist/antd.css";
+import Router from './router';
 
 ReactDOM.render(
   <React.StrictMode>
-    <LearnEN />
+    <Router />
   </React.StrictMode>,
   document.getElementById('root')
 );

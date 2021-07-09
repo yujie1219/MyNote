@@ -31,24 +31,7 @@ export default class VocabularyDetail extends Component<IProp, IState> {
     constructor(props: IProp) {
         super(props);
         this.state = {
-            vocabularyTypes: [new VocabularyType(
-                '测试',
-                'adv',
-                [new Example(
-                    "This is a test",
-                    "这是一个测试"
-                )])
-                , new VocabularyType(
-                    '测试2',
-                    'adv',
-                    [new Example(
-                        "This is another test",
-                        "这是另一个测试"
-                    ), new Example(
-                        "This is another test",
-                        "这是另一个测试"
-                    )]
-                )],
+            vocabularyTypes: [],
             tempVocabularyTypes: [],
             editVocabularyTypes: [],
             disableAddExamples: [],

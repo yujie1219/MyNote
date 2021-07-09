@@ -160,7 +160,7 @@ export default class ShowExample extends React.Component<IProp, IState> {
                         editingDst: false
                     });
 
-                    if (!this.state.editingSrc || this.state.tempNew.src.length != 0) {
+                    if (!this.state.editingSrc || this.state.tempNew.src.length !== 0) {
                         // tell the parent to end the add progress
                         this.props.dstEditable(this.props.transIndex, type,
                             this.props.exIndex, this.props.addNew, this.state.newExample).onEnd();

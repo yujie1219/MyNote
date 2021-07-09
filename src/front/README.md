@@ -57,4 +57,6 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 - [X] Fix the bug when the searching vocabulary change, the state property will not change.
 
-- [ ] Add Router.
+- [X] Add easy Router.
+
+- [ ] Make Cover.
