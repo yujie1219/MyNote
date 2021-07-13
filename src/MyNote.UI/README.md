@@ -60,3 +60,5 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 - [X] Add easy Router.
 
 - [ ] Make Cover.
+
+- [ ] Add an ID for each example.
