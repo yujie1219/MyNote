@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { Collapse, Row, Col, Button, List, Typography, Tooltip } from 'antd';
 import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
-import { EditType, EditVocabularyType, Example, VocabularyType } from "../model/vocabulary";
+import { EditType, EditVocabularyType, Example, VocabularyType } from "../../model/vocabulary";
 import "./vocabularyDetail.css";
 import ShowExample from "./showExample";
 import ExampleConsole from "./exampleConsole";
 import TranslationAddContent from "./translationAddContent";
-import BasicModal from "../share/basicModal";
+import BasicModal from "../../share/basicModal";
 
 const { Panel } = Collapse;
 const { Title, Text } = Typography;
@@ -424,10 +424,12 @@ export default class VocabularyDetail extends Component<IProp, IState> {
                                 }}
                             />
                             <Button block disabled={this.state.showAddTranslationModal} onClick={this.handleTranslationAdd} icon={<PlusOutlined />}></Button>
-                            <BasicModal content={this.getTranslationAddContent()}
+                            <BasicModal
+                                title='Add Translaton'
+                                content={this.getTranslationAddContent()}
                                 visible={this.state.showAddTranslationModal}
-                                handleTranslationAddCancel={this.handleTranslationAddCancel}
-                                handleTranslationAddOk={this.handleTranslationAddOk} />
+                                handleModalOnCancel={this.handleTranslationAddCancel}
+                                handleModalOnOk={this.handleTranslationAddOk} />
                         </Panel>
                     </Collapse>
                 </Col>

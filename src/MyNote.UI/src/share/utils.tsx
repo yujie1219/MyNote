@@ -3,4 +3,7 @@ export default class Utils {
         return new Promise(resolve => setTimeout(resolve, delay));
     }
 
+    public static getRandomInt = (border: number) => {
+        return Math.floor(Math.random() * border);
+    }
 }

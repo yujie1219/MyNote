@@ -2,8 +2,8 @@ import { Typography, Divider, Row, Col, Button, Input, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import React, { ChangeEvent } from 'react';
 import VocabularyDetail from './vocabularyDetail';
-import { Vocabulary } from '../model/vocabulary';
-import Utils from '../share/utils';
+import { Vocabulary } from '../../model/vocabulary';
+import Utils from '../../share/utils';
 
 const { Title } = Typography;
 

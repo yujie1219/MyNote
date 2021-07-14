@@ -2,16 +2,17 @@ import React from "react";
 import { Modal } from 'antd';
 
 interface IProp {
+    title: string,
     content: JSX.Element,
     visible: boolean,
-    handleTranslationAddCancel: () => void
-    handleTranslationAddOk: () => void
+    handleModalOnCancel: () => void
+    handleModalOnOk: () => void
 }
 
 export default class BasicModal extends React.Component<IProp, any> {
     render() {
         return (
-            <Modal title='Add Translation' visible={this.props.visible} destroyOnClose onCancel={this.props.handleTranslationAddCancel} onOk={this.props.handleTranslationAddOk}>
+            <Modal title={this.props.title} visible={this.props.visible} destroyOnClose onCancel={this.props.handleModalOnCancel} onOk={this.props.handleModalOnOk}>
                 {this.props.content}
             </Modal>
         );

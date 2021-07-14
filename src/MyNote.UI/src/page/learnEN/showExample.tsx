@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography } from 'antd';
-import { EditType, Example } from "../model/vocabulary";
+import { EditType, Example } from "../../model/vocabulary";
 import './showExample.css'
 
 const { Text } = Typography;

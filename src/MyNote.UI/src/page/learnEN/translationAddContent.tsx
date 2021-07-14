@@ -1,6 +1,6 @@
 import React from "react";
 import { Row, Col, Input, Typography, Select } from 'antd';
-import { VocabularyType } from "../model/vocabulary";
+import { VocabularyType } from "../../model/vocabulary";
 
 const { Text } = Typography;
 const { Option } = Select;

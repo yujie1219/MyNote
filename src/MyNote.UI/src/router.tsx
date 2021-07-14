@@ -1,7 +1,8 @@
 import { Menu } from "antd";
 import React from "react";
 import { BrowserRouter, Link, Redirect, Route, Switch } from "react-router-dom";
-import LearnEN from "./learnEN/learnEN";
+import LearnEN from "./page/learnEN/learnEN";
+import BinaryConversion from "./page/binayConversion/binaryConversion";
 import RouterConfig from "./model/routerConfig";
 
 interface IState {
@@ -21,6 +22,12 @@ const routes: RouterConfig[] = [
         path: "/learnEN",
         exact: false,
         main: () => <LearnEN />
+    }, {
+        key: "binaryConversion",
+        title: "Binary Conversion",
+        path: "/binaryConversion",
+        exact: false,
+        main: () => <BinaryConversion />
     }, {
         key: "default",
         title: "default",

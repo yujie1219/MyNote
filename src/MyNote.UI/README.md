@@ -62,3 +62,7 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 - [ ] Make Cover.
 
 - [ ] Add an ID for each example.
+
+- [X] Add binary conversion practice page.
+
+- [ ] Fix the bug the router tag will change to cover after refresh the page.
