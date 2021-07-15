@@ -2,10 +2,8 @@
 using Microsoft.Extensions.Logging;
 using MyNote.Api.Models;
 using MyNote.Api.Utils;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyNote.Api.Services
 {
@@ -32,7 +30,7 @@ namespace MyNote.Api.Services
 
         public void RefreshCache()
         {
-            this.vocabularyCache = FileJsonOperator.ReadFromFile<List<Vocabulary>>(this.FilePath);
+            this.vocabularyCache = FileJsonOperator.ReadFromFile<Vocabulary>(this.FilePath, this.logger);
         }
     }
 }

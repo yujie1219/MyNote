@@ -1,12 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MyNote.Api.Models;
+using MyNote.Api.Repositories.Interfaces;
 using MyNote.Api.Services;
 using MyNote.Api.Utils;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyNote.Api.Repositories
 {
@@ -29,17 +27,20 @@ namespace MyNote.Api.Repositories
                 vocabularyTypes = new List<VocabularyType>()
             };
 
-            return FileJsonOperator.AppendToFile(this.FilePath, vocabulary);
+            List<Vocabulary> vocabularies = FileJsonOperator.ReadFromFile<Vocabulary>(this.FilePath, this.logger);
+            vocabularies.Add(vocabulary);
+
+            return FileJsonOperator.OverwriteFile(this.FilePath, vocabularies, this.logger);
         }
 
         public bool RemoveVocabulary(string word)
         {
-            List<Vocabulary> vocabularies = FileJsonOperator.ReadFromFile<List<Vocabulary>>(this.FilePath);
+            List<Vocabulary> vocabularies = FileJsonOperator.ReadFromFile<Vocabulary>(this.FilePath, this.logger);
             int count = vocabularies.RemoveAll(x => x.Word == word);
 
             if (count != 0)
             {
-                return FileJsonOperator.OverwriteFile(this.FilePath, vocabularies);
+                return FileJsonOperator.OverwriteFile(this.FilePath, vocabularies, this.logger);
             }
 
             return false;

@@ -1,19 +1,16 @@
-﻿using Microsoft.Extensions.Configuration;
-using MyNote.Api.Models;
+﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyNote.Api.Utils
 {
     public static class FileJsonOperator
     {
-        public static bool OverwriteFile(string filePath, Object obj)
+        public static bool OverwriteFile(string filePath, Object obj, ILogger logger)
         {
-            FileInfo fileInfo = CreateIfNotExists(filePath);
+            FileInfo fileInfo = CreateIfNotExists(filePath, logger);
 
             if (obj != null)
             {
@@ -21,6 +18,7 @@ namespace MyNote.Api.Utils
 
                 lock (fileInfo)
                 {
+                    logger.LogInformation("Overwrite content {0} to file {1}", content, filePath);
                     File.WriteAllText(fileInfo.FullName, content);
                 }
 
@@ -30,9 +28,9 @@ namespace MyNote.Api.Utils
             return false;
         }
 
-        public static bool AppendToFile(string filePath, Object obj)
+        public static bool AppendToFile(string filePath, Object obj, ILogger logger)
         {
-            FileInfo fileInfo = CreateIfNotExists(filePath);
+            FileInfo fileInfo = CreateIfNotExists(filePath, logger);
 
             if (obj != null)
             {
@@ -40,6 +38,7 @@ namespace MyNote.Api.Utils
 
                 lock (fileInfo)
                 {
+                    logger.LogInformation("Append content {0} to file {1}", content, filePath);
                     File.AppendAllText(fileInfo.FullName, content);
                 }
 
@@ -49,33 +48,43 @@ namespace MyNote.Api.Utils
             return false;
         }
 
-        public static T ReadFromFile<T>(string filePath)
+        public static List<T> ReadFromFile<T>(string filePath, ILogger logger)
         {
-            FileInfo fileInfo = CreateIfNotExists(filePath);
+            FileInfo fileInfo = CreateIfNotExists(filePath, logger);
 
             lock (fileInfo)
             {
                 string content = File.ReadAllText(fileInfo.FullName);
-                if (content != null)
+                if (content != null && content.Length != 0)
                 {
-                    return JsonConvert.DeserializeObject<T>(content);
+                    logger.LogInformation("Read content {0} from file {1}", content, filePath);
+                    return JsonConvert.DeserializeObject<List<T>>(content);
                 }
             }
-            return default(T);
+            return new List<T>();
         }
 
-        private static FileInfo CreateIfNotExists(string filePath)
+        private static FileInfo CreateIfNotExists(string filePath, ILogger logger)
         {
             if (filePath == null)
             {
-                throw new Exception("The file path of the learning DB should not be null!");
+                string errorMessge = "The file path of the learning DB should not be null!";
+                logger.LogError(errorMessge);
+                throw new Exception(errorMessge);
             }
             else
             {
                 FileInfo fileInfo = new FileInfo(filePath);
                 if (!fileInfo.Exists)
                 {
-                    fileInfo.Create();
+                    if (!Directory.Exists(fileInfo.DirectoryName))
+                    {
+                        DirectoryInfo directoryInfo = Directory.CreateDirectory(fileInfo.DirectoryName);
+                        logger.LogInformation("The driectory {0} was created successfully at {1}", directoryInfo.FullName, directoryInfo.CreationTimeUtc);
+                    }
+
+                    fileInfo.Create().Close();
+                    logger.LogInformation("The file {0} was created successfully at {1}", fileInfo.FullName, fileInfo.CreationTimeUtc);
                 }
 
                 return fileInfo;

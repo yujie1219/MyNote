@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MyNote.Api.Repositories;
+using MyNote.Api.Repositories.Interfaces;
 using MyNote.Api.Utils;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MyNote.Api.Controllers
 {

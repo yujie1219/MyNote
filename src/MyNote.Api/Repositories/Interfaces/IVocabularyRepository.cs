@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace MyNote.Api.Repositories
+namespace MyNote.Api.Repositories.Interfaces
 {
     public interface IVocabularyRepository
     {

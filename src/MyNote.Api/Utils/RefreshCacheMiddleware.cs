@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using MyNote.Api.Services;
-using System;
 using System.Threading.Tasks;
 
 namespace MyNote.Api.Utils

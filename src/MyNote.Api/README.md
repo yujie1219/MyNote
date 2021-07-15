@@ -1,7 +1,5 @@
 ## What's Next
 
-- [ ] Fix the DirectoryNotFoundException bug while creating file.
-
-- [ ] Generate the file to the output path.
+- [X] Fix the DirectoryNotFoundException bug while creating file.
 
 - [ ] Realize the remain Api.
