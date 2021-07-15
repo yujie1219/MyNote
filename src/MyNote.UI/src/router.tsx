@@ -1,13 +1,9 @@
-import { Menu } from "antd";
 import React from "react";
-import { BrowserRouter, Link, Redirect, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import LearnEN from "./page/learnEN/learnEN";
 import BinaryConversion from "./page/binayConversion/binaryConversion";
 import RouterConfig from "./model/routerConfig";
-
-interface IState {
-    currentkey: string;
-}
+import HeaderMenu from "./share/headMenu";
 
 const routes: RouterConfig[] = [
     {
@@ -37,29 +33,11 @@ const routes: RouterConfig[] = [
     }
 ];
 
-export default class Router extends React.Component<any, IState> {
-    state = {
-        currentkey: 'cover'
-    };
-
-    handleClick = (menuInfo: any) => {
-        this.setState({
-            currentkey: menuInfo.key
-        });
-    }
-
+export default class Router extends React.Component {
     render() {
         return (
             <BrowserRouter>
-                <Menu onClick={this.handleClick} selectedKeys={[this.state.currentkey]} mode='horizontal' theme='dark'>
-                    {
-                        routes.map(item => {
-                            return item.key !== 'default' && <Menu.Item key={item.key}>
-                                <Link to={item.path}>{item.title}</Link>
-                            </Menu.Item>
-                        })
-                    }
-                </Menu>
+                <HeaderMenu routes={routes} />
 
                 <Switch>
                     {
@@ -67,7 +45,8 @@ export default class Router extends React.Component<any, IState> {
                             return <Route path={item.path}
                                 key={item.key}
                                 exact={item.exact}
-                                children={<item.main />} />
+                                //children={<item.main />}
+                                component={item.main} />
                         })
                     }
                 </Switch>
