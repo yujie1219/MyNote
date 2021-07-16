@@ -27,6 +27,7 @@ namespace MyNote.Api.Repositories
 
             if (examples != null)
             {
+                example.Id = Guid.NewGuid().ToString();
                 examples.Add(example);
                 return FileJsonOperator.OverwriteFile(this.FilePath, vocabularies, this.logger);
             }
@@ -53,11 +54,11 @@ namespace MyNote.Api.Repositories
             return this.cacheService.GetVocabularyType(word);
         }
 
-        public bool RemoveExample(string word, string translation, int exampleID)
+        public bool RemoveExample(string word, string translation, string exampleID)
         {
             List<Vocabulary> vocabularies = FileJsonOperator.ReadFromFile<Vocabulary>(this.FilePath, this.logger);
             int? count = vocabularies.Find(item => item.Word.Equals(word))?.
-                vocabularyTypes.Find(item => item.Translation.Equals(translation))?.examples.RemoveAll(item => item.Id == exampleID);
+                vocabularyTypes.Find(item => item.Translation.Equals(translation))?.examples.RemoveAll(item => item.Id.Equals(exampleID));
 
             if (count.HasValue && count != 0)
             {

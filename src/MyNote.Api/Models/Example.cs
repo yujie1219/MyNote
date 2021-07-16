@@ -8,7 +8,7 @@
         /// <summary>
         /// Id
         /// </summary>
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// Source sentence

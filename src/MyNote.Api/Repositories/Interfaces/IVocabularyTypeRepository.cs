@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MyNote.Api.Repositories.Interfaces
 {
-    interface IVocabularyTypeRepository
+    public interface IVocabularyTypeRepository
     {
         List<VocabularyType> GetVocabularyTypes(string word);
 
@@ -13,6 +13,6 @@ namespace MyNote.Api.Repositories.Interfaces
 
         bool AddExample(string word, string translation, Example example);
 
-        bool RemoveExample(string word, string translation, int exampleID);
+        bool RemoveExample(string word, string translation, string exampleID);
     }
 }

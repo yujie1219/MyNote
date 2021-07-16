@@ -66,3 +66,5 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 - [X] Add binary conversion practice page.
 
 - [X] Fix the bug the router tag will change to cover after refresh the page.
+
+- [ ] Use axios to send request

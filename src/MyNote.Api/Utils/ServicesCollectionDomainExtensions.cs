@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MyNote.Api.Repositories;
+using MyNote.Api.Repositories.Interfaces;
 using MyNote.Api.Services;
 
 namespace MyNote.Api.Utils
@@ -21,6 +22,7 @@ namespace MyNote.Api.Utils
 
             // Repositories
             services.AddSingleton<IVocabularyRepository, VocabularyRepository>();
+            services.AddSingleton<IVocabularyTypeRepository, VocabularyTypeRepository>();
 
             return services;
         }
