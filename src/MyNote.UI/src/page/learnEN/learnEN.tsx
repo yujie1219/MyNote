@@ -4,6 +4,7 @@ import React, { ChangeEvent } from 'react';
 import VocabularyDetail from './vocabularyDetail';
 import { Vocabulary } from '../../model/vocabulary';
 import Utils from '../../share/utils';
+import { IAPI, API } from '../../share/api';
 
 const { Title } = Typography;
 
@@ -13,16 +14,23 @@ interface IState {
 }
 
 export default class LearnEN extends React.Component<any, IState> {
+    private APIInstance: IAPI;
+
     constructor(prop: any) {
         super(prop);
         this.state = {
             searching: '',
             restoredList: []
         };
+
+        this.APIInstance = API.getInstance();
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         // async init state
+        this.setState({
+            restoredList: await this.APIInstance.getVocabularies()
+        });
     }
 
     componentDidUpdate(prevProps: any, prevState: IState) {

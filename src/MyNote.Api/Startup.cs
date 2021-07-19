@@ -43,6 +43,13 @@ namespace MyNote.Api
 
             app.UseRouting();
 
+            app.UseCors(builder =>
+            {
+                builder.WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+
             app.UseAuthorization();
 
             app.UseMiddleware<RefreshCacheMiddleware>();
